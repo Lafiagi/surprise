@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Box } from "@chakra-ui/react";
-import { useSuiClient } from '@mysten/dapp-kit';
-import { useEnokiFlow } from '@mysten/enoki/react';
 
 const getRandomColor = () => {
   const letters = '0123456789ABCDEF';
@@ -17,58 +15,7 @@ const ChoseGift = () => {
   const [selectedBox, setSelectedBox] = useState(null);
   const [boxColors] = useState([getRandomColor(), getRandomColor(), getRandomColor()]);
   const [isBoxClicked, setIsBoxClicked] = useState(false);
-  const client = useSuiClient(); // The SuiClient instance
-  const enokiFlow = useEnokiFlow(); // The EnokiFlow instance
 
-  /**
-   * The current user session, if any. This is used to determine whether the user is logged in or
-   * not.
-   */
-  const [session, setSession] = useState();
-
-  /* The account information of the current user. */
-  const [suiAddress, setSuiAddress] = useState(null);
-  const [balance, setBalance] = useState(0);
-  const [accountLoading, setAccountLoading] = useState(true);
-
-
-  /**
-   * When the page loads, complete the login flow.
-   */
-  useEffect(() => {
-    completeLogin();
-  }, []);
-
-  /**
-   * When the user logs in, fetch the account information.
-   */
-  useEffect(() => {
-    if (session) {
-     
-    }
-  }, [session]);
-
-  /**
-   * Complete the Enoki login flow after the user is redirected back to the app.
-   */
-  const completeLogin = async () => {
-    try {
-      await enokiFlow.handleAuthCallback();
-    } catch (error) {
-      console.error("Erro handling auth callback", error);
-    } finally {
-      // Fetch the session
-      const session = await enokiFlow.getSession();
-      console.log("Session", session);
-
-      if (session && session.jwt){
-        setSession(session);
-      }
-
-      // remove the URL fragment
-      window.history.replaceState(null, "", window.location.pathname);
-    }
-  };
   const handleCopyLink = () => {
     navigator.clipboard.writeText(messageUrl);
     alert("Link copied to clipboard!");
