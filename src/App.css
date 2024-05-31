@@ -1,38 +1,107 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+
 .App {
   text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+  background-color: #e6f3ff;
+  min-height: 100vh;
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
+  padding: 1rem 2rem;
+  background-color: #fff;
+}
+
+.App-logo {
+  height: 40px;
+}
+
+.App-nav {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.App-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  gap: 2rem;
+  flex: 1;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+}
+
+.App-nav a {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+}
+
+.App-nav a.active,
+.App-nav a:hover {
+  color: #0073e6;
+  background-color: #f0f0f0;
+}
+
+.App-auth {
+  display: flex;
+  align-items: center;
+}
+
+.App-auth a {
+  text-decoration: none;
+  margin-left: 1rem;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+}
+
+.App-auth .sign-up {
+  background-color: #0073e6;
   color: white;
+  border-radius: 5px;
 }
 
-.App-link {
-  color: #61dafb;
+.App-main {
+  padding: 2rem;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.App-main h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.App-main p {
+  font-size: 2.25rem;
+  margin-bottom: 2rem;
+}
+
+.get-started {
+  background-color: #0073e6;
+  color: white;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.App-image img {
+  margin-top: 2rem;
+  width: 400px;
+  height: 400px;
 }
