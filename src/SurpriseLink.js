@@ -1,7 +1,7 @@
 import React from 'react';
 
 export const SurpriseMessage = () => {
-  const messageUrl = "https://happybirthdayjef";
+  const messageUrl = "http://localhost:3000/chose-gift";
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(messageUrl);
@@ -28,14 +28,6 @@ export const SurpriseMessage = () => {
             Copy Link
           </button>
         </div>
-        {/* <div style={styles.socialIcons}>
-          <button style={styles.iconButton}>F</button>
-          <button style={styles.iconButton}>X</button>
-          <button style={styles.iconButton}>W</button>
-          <button style={styles.iconButton}>I</button>
-          <button style={styles.iconButton}>L</button>
-          <button style={styles.iconButton}>I</button>
-        </div> */}
       </div>
     </div>
   );

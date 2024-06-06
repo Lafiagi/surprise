@@ -5,6 +5,7 @@ import GiftSelection from './GiftSelection';
 import MessageForm from './MessageForm';
 import SurpriseMessage from './SurpriseLink';
 import ChoseGift from './ChoseGift';
+import Login from './Login';
 
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
         <Route path="/select-gift" element={<GiftSelection />} />
         <Route path="/gift-link" element={<SurpriseMessage />} />
         <Route path="/chose-gift" element={<ChoseGift />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
     </Router>
   );
