@@ -1,11 +1,8 @@
 module surprise_contract::surprise_contract {
     use std::string;
+    use std::vector;
     use sui::vec_set::{Self, VecSet};
-    use sui::random::{
-        Random,
-        new_generator,
-        RandomGenerator
-    };
+    use sui::random::{Random, new_generator, RandomGenerator};
     use sui::tx_context::{Self, TxContext};
 
     public struct GiftBox has drop, copy {
@@ -25,13 +22,13 @@ module surprise_contract::surprise_contract {
         r: &Random,
         ctx: &mut TxContext
     ): GiftBox {
-        let mut generator = r.new_generator(ctx);
+        let mut generator = new_generator(r, ctx);
         let color = generate_random_color(&mut generator);
 
         let box = GiftBox {
-            id: tx_context::fresh_object_address(ctx), // Use generate_object_id directly
+            id: tx_context::fresh_object_address(ctx),
             content: content,
-            color: string::utf8(color),
+            color: color.to_string(),
         };
 
         box
@@ -54,7 +51,6 @@ module surprise_contract::surprise_contract {
         color
     }
 
-    /// Converts a u8 to its corresponding hex character.
     fun hex_char(val: u8): u8 {
         if (val < 10) {
             48 + val // '0' to '9'
@@ -68,17 +64,17 @@ module surprise_contract::surprise_contract {
         r: &Random,
         ctx: &mut TxContext
     ): SurprisePack {
-        let mut generator = r.new_generator(ctx);
+        let mut generator = new_generator(r, ctx);
         let mut gift_boxes = vec_set::empty<GiftBox>();
 
         let len = vector::length(&box_contents);
         let mut i = 0;
         while (i < len) {
-            let content = vector::borrow(&box_contents, i);
+            let content = *vector::borrow(&box_contents, i);
             let box = create_box(content, r, ctx);
             vec_set::insert(&mut gift_boxes, box);
             i = i + 1;
-        }
+        };
 
         let pack = SurprisePack {
             id: tx_context::fresh_object_address(ctx),
@@ -87,17 +83,5 @@ module surprise_contract::surprise_contract {
         };
 
         pack
-    }
-
-    public fun get_specific_box(pack: &SurprisePack, box_id: address): option::Option<GiftBox> {
-        let boxes = &pack.boxes;
-        let iter = vec_set::iter(boxes);
-        while (iter.has_next()) {
-            let box = iter.next();
-            if (box.id == box_id) {
-                return option::some(box);
-            }
-        }
-        option::none<GiftBox>()
     }
 }

@@ -1,11 +1,9 @@
 module surprise_contract::surprise_contract {
     use std::string;
+    use std::vector;
     use sui::vec_set::{Self, VecSet};
-    use sui::random::{
-        Random,
-        new_generator,
-        RandomGenerator
-    };
+    use sui::random::{Random, new_generator, RandomGenerator};
+    use sui::tx_context::{Self, TxContext};
 
     public struct GiftBox has drop, copy {
         id: address,
@@ -13,7 +11,7 @@ module surprise_contract::surprise_contract {
         color: string::String,
     }
 
-    public struct SurprisePack {
+    public struct SurprisePack has drop, copy {
         id: address,
         boxes: VecSet<GiftBox>,
         is_claimed: bool,
@@ -23,19 +21,17 @@ module surprise_contract::surprise_contract {
         content: string::String,
         r: &Random,
         ctx: &mut TxContext
-    ) {
-        let mut generator = r.new_generator(ctx);
-        let mut gift_boxes = vec_set::empty<GiftBox>();
-
+    ): GiftBox {
+        let mut generator = new_generator(r, ctx);
         let color = generate_random_color(&mut generator);
 
         let box = GiftBox {
-            id: tx_context::fresh_object_address(ctx), // Use generate_object_id directly
+            id: tx_context::fresh_object_address(ctx),
             content: content,
-            color: string::utf8(color),
+            color: color.to_string(),
         };
 
-        vec_set::insert(&mut gift_boxes, box);
+        box
     }
 
     fun generate_random_color(r: &mut RandomGenerator): vector<u8> {
@@ -46,18 +42,17 @@ module surprise_contract::surprise_contract {
         // Convert to hex format
         let mut color = vector::empty<u8>();
         vector::push_back(&mut color, hex_char(r_val >> 4));
-        vector::push_back(&mut color, hex_char(r_val &0xF));
+        vector::push_back(&mut color, hex_char(r_val & 0xF));
         vector::push_back(&mut color, hex_char(g_val >> 4));
-        vector::push_back(&mut color, hex_char(g_val &0xF));
+        vector::push_back(&mut color, hex_char(g_val & 0xF));
         vector::push_back(&mut color, hex_char(b_val >> 4));
-        vector::push_back(&mut color, hex_char(b_val &0xF));
+        vector::push_back(&mut color, hex_char(b_val & 0xF));
 
         color
     }
 
-    /// Converts a u8 to its corresponding hex character.
     fun hex_char(val: u8): u8 {
-        if (val <10) {
+        if (val < 10) {
             48 + val // '0' to '9'
         } else {
             87 + val // 'a' to 'f'
@@ -66,11 +61,27 @@ module surprise_contract::surprise_contract {
 
     public fun generate_pack(
         box_contents: vector<string::String>,
-        mut number_of_gift_boxes: u8
-    ) {
-        let mut index: u8 = 0;
-        while (index < number_of_gift_boxes) {
-            index = index + 1;
-        }
+        r: &Random,
+        ctx: &mut TxContext
+    ): SurprisePack {
+        let mut generator = new_generator(r, ctx);
+        let mut gift_boxes = vec_set::empty<GiftBox>();
+
+        let len = vector::length(&box_contents);
+        let mut i = 0;
+        while (i < len) {
+            let content = *vector::borrow(&box_contents, i);
+            let box = create_box(content, r, ctx);
+            vec_set::insert(&mut gift_boxes, box);
+            i = i + 1;
+        };
+
+        let pack = SurprisePack {
+            id: tx_context::fresh_object_address(ctx),
+            boxes: gift_boxes,
+            is_claimed: false,
+        };
+
+        pack
     }
 }
